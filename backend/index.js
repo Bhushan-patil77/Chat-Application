@@ -18,7 +18,9 @@ const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: "*" } });
 
 let users = {}; 
-app.use(cors());
+app.use(cors({
+    origin: '*'
+  }));
 app.use(express.json());
 
 app.get('/getUsers', async (req, res)=>{
