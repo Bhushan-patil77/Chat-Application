@@ -62,7 +62,7 @@ function Home() {
 
 
     const getUsers = () => {
-        fetch('https://chat-application-pi-five.vercel.app/getUsers')
+        fetch('https://chat-application-pi-five.vercel.app/getUsers/')
             .then((response) => { return response.json() })
             .then((data) => { setConnectedUsers(data.data) })
     }
