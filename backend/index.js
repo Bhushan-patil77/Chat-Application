@@ -4,6 +4,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const mongoose = require('mongoose')
+const UserModel = require('./models/UserModel')
+const MessageModel = require('./models/MessageModel')
 
 
 DB_URL='mongodb+srv://bhushanravindrapatil77:iGA2Yuhg5626aHr7@cluster0.ap69s.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
