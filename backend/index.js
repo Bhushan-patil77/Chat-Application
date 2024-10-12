@@ -18,9 +18,12 @@ const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: '*' } });
 
 let users = {}; 
-app.use(cors({
-    origin: '*', 
-  }));
+const corsOptions = {
+    origin: ['http://localhost:3000', 'http://yourapp.com'],  // Add specific allowed origins
+    methods: ['GET', 'POST'],  // Limit methods if necessary
+    credentials: true  // If you're using cookies or sessions
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/getUsers', async (req, res)=>{
