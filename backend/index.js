@@ -32,6 +32,10 @@ app.get('/getUsers', async (req, res)=>{
    res.status(200).json({message:'All Registered users', data:data})
 })
 
+app.get('/hello', (req, res)=>{
+    res.send('hiii')
+})
+
 
 app.post('/Register', async (req, res)=>{
     console.log('Register called...')
