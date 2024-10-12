@@ -15,15 +15,22 @@ DB_URL='mongodb+srv://bhushanravindrapatil77:iGA2Yuhg5626aHr7@cluster0.ap69s.mon
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: '*' } });
+const io = socketIo(server, {
+    cors: {
+      origin: 'https://chat-application-frontend-rose.vercel.app',  // Replace with your frontend URL
+      methods: ['GET', 'POST']
+    }
+  });
 
 let users = {}; 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://yourapp.com'],  // Add specific allowed origins
-    methods: ['GET', 'POST'],  // Limit methods if necessary
-    credentials: true  // If you're using cookies or sessions
-};
-app.use(cors(corsOptions));
+    origin: 'https://chat-application-frontend-rose.vercel.app',  // Replace with your frontend URL
+    methods: ['GET', 'POST'],  // Allow necessary methods
+    credentials: true  // If using cookies/sessions
+  };
+  
+  app.use(cors(corsOptions));
+
 app.use(express.json());
 
 app.get('/getUsers', async (req, res)=>{
