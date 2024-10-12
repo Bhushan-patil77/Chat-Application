@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client';
-const socket = io('http://localhost:5000');
+const socket = io('https://chat-application-pi-five.vercel.app/');
 
 
 
@@ -26,10 +26,20 @@ function Home() {
     useEffect(() => {
         const userLoggedIn = JSON.parse(localStorage.getItem('user'))
 
+        
 
-        socket.on('usersConnected', (users) => {
-            setConnectedUsers(users);
-        });
+        if (userLoggedIn && userLoggedIn[0]._id) {
+            socket.emit('storeMySocketIdInDB', userLoggedIn[0]);
+        } else {
+            console.log('User _id is missing');
+        }
+
+        socket.on('yourSocketIdIs', (yourSocketIdIs)=>{
+            setSenderId(yourSocketIdIs)
+        })
+
+
+     
 
         socket.on('mySocketId', (id) => {
             setSenderId(id);
@@ -45,14 +55,14 @@ function Home() {
     }, []);
 
     useEffect(() => {
-        console.log(connectedUsers);
+        console.log(senderId);
 
-    }, [connectedUsers])
+    }, [senderId])
 
 
 
     const getUsers = () => {
-        fetch('http://localhost:5000/getUsers')
+        fetch('https://chat-application-pi-five.vercel.app/getUsers')
             .then((response) => { return response.json() })
             .then((data) => { setConnectedUsers(data.data) })
     }

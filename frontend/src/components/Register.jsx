@@ -14,7 +14,9 @@ function Register() {
             user[key] = value;
         }
 
-             fetch('http://localhost:5000/RegisterUser', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
+        user.socketId=''
+
+             fetch('https://chat-application-pi-five.vercel.app/RegisterUser', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
             .then((response) => { return response.json() })
             .then((data) => {
                  if(data.message=="User Registered Successfully...")

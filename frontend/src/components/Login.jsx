@@ -17,7 +17,7 @@ function Login() {
         
        }
 
-       fetch('http://localhost:5000/Login', {method:'post', headers:{'Content-Type': 'application/json'}, body:JSON.stringify(user)})
+       fetch('https://chat-application-pi-five.vercel.app/Login', {method:'post', headers:{'Content-Type': 'application/json'}, body:JSON.stringify(user)})
        .then((response)=>{return response.json()})
        .then((data)=>{
         if(data.message=='User authenticated...')

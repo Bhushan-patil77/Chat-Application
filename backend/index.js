@@ -44,11 +44,21 @@ app.post('/Login', async (req, res)=>{
 io.on('connection', (socket) => {
     console.log('New user connected');
 
+    socket.on('storeMySocketIdInDB', async(userLoggedIn)=>{
+        console.log('storing users socket id in database',userLoggedIn);// TRYING TO PUT SOCKET ID IN DATABASE;
+        
+
+        const socketId = socket.id;
+
+
+        const result = await UserModel.updateOne({_id:userLoggedIn._id}, { $set: {socketId:socketId} });
+
+        socket.emit('yourSocketIdIs', socketId)
+    })
+
     socket.on('registerUser', (username) => {
         users[socket.id] = username; 
         console.log(`${username} connected`, socket.id);
-        io.emit('usersConnected', users)
-
         socket.emit('mySocketId', socket.id)
     });
 
