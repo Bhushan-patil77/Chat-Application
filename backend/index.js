@@ -23,14 +23,8 @@ const io = socketIo(server, {
   });
 
 let users = {}; 
-const corsOptions = {
-    origin: 'https://chat-application-frontend-rose.vercel.app',  // Replace with your frontend URL
-    methods: ['GET', 'POST'],  // Allow necessary methods
-    credentials: true  // If using cookies/sessions
-  };
-  
-  app.use(cors(corsOptions));
 
+app.use(cors())
 app.use(express.json());
 
 app.get('/getUsers', async (req, res)=>{
