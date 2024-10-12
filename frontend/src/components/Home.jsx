@@ -1,7 +1,62 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { io } from 'socket.io-client';
+const socket = io('http://localhost:5000');
+
+
 
 function Home() {
+    const [connectedUsers, setConnectedUsers] = useState({});
+    const [username, setUsername] = useState('');
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [senderId, setSenderId] = useState(null);
+    const [recipientId, setRecipientId] = useState('');
+
+
+    
+    useEffect(() => {
+        const userLoggedIn = JSON.parse(localStorage.getItem('user'))
+        console.log(userLoggedIn);
+        
+        socket.on('usersConnected', (users) => {
+            setConnectedUsers(users);
+        });
+
+        socket.on('mySocketId', (id) => {
+            setSenderId(id);
+        });
+
+        socket.on('receiveMessage', ({ from, message }) => {
+            setMessages((prevMessages) => [...prevMessages, { from, message, entering: true }]);
+        });
+
+        return () => {
+            socket.off('receiveMessage');
+        };
+    }, []);
+
+    const registerUser = () => {
+        if (username) {
+            socket.emit('registerUser', username);
+        }
+    };
+
+    const sendMessage = () => {
+        if (message && recipientId) {
+            socket.emit('sendMessage', { recipientId, message });
+            const msgObject = { from: username, message };
+            setMessages((prevMessages) => [...prevMessages, msgObject , msg]);
+            setMessage('');
+        }
+    };
+
+    const connectWith = (id) => {
+        setRecipientId(id);
+    };
+
+
   return (
+    
     <div className='flex gap-2 w-screen h-screen p-2'>
             <div className="recentChats flex flex-col rounded-lg w-[20%] p-2 bg-slate-600">
                 <div className="flex xl:flex-row flex-col justify-between">

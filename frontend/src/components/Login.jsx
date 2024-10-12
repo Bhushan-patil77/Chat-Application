@@ -1,11 +1,40 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
+
+    const navigate = useNavigate()
+
+    const handleLogin = (e) =>{
+        e.preventDefault()
+        const formData = new FormData(e.target);
+        const user = {};
+      
+
+       for(let [key, value] of formData)
+       {
+          user[key]=value;
+        
+       }
+
+       fetch('http://localhost:5000/Login', {method:'post', headers:{'Content-Type': 'application/json'}, body:JSON.stringify(user)})
+       .then((response)=>{return response.json()})
+       .then((data)=>{
+        if(data.message=='User authenticated...')
+        {
+            localStorage.setItem('user', JSON.stringify(data.authenticUser))
+            navigate('/')
+        }
+       })
+       .catch((err)=>{alert(err)})
+
+    }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
     <div className="bg-white shadow-md rounded-lg p-8 w-96">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <form action="/login" method="POST">
+        <form onSubmit={(e)=>{handleLogin(e)}} >
             <div className="mb-4">
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
                 <input
@@ -34,7 +63,7 @@ function Login() {
             </button>
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">
-            Don't have an account? <a href="/register" className="text-blue-500 hover:underline">Register</a>
+            Don't have an account? <span className="text-blue-500 hover:underline" onClick={()=>{navigate('/Register')}}>Register</span>
         </p>
     </div>
 </div>

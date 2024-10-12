@@ -8,6 +8,9 @@ const UserModel = require('./models/UserModel')
 const MessageModel = require('./models/MessageModel')
 
 
+
+
+
 DB_URL='mongodb+srv://bhushanravindrapatil77:iGA2Yuhg5626aHr7@cluster0.ap69s.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 const app = express();
@@ -15,6 +18,23 @@ const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: "*" } });
 
 let users = {}; 
+app.use(cors());
+app.use(express.json());
+
+
+app.post('/RegisterUser', async (req, res)=>{
+    const newUser = new UserModel(req.body)
+    console.log(req.body)
+    const data = await newUser.save()
+    console.log(data)
+    res.status(200).json({message:'User Registered Successfully...'})
+})
+
+app.post('/Login', async (req, res)=>{
+    const data = await UserModel.find({username:req.body.username, password:req.body.password})
+    console.log(data)
+    res.status(200).json({message:'User authenticated...', authenticUser:data})
+})
 
 io.on('connection', (socket) => {
     console.log('New user connected');
