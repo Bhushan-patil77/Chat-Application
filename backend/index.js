@@ -15,11 +15,11 @@ DB_URL='mongodb+srv://bhushanravindrapatil77:iGA2Yuhg5626aHr7@cluster0.ap69s.mon
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: "*" } });
+const io = socketIo(server, { cors: { origin: '*' } });
 
 let users = {}; 
 app.use(cors({
-    origin: '*'
+    origin: '*', 
   }));
 app.use(express.json());
 
