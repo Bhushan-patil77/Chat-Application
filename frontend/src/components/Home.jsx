@@ -5,19 +5,28 @@ const socket = io('http://localhost:5000');
 
 
 function Home() {
-    const [connectedUsers, setConnectedUsers] = useState({});
+    const [connectedUsers, setConnectedUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [senderId, setSenderId] = useState(null);
     const [recipientId, setRecipientId] = useState('');
 
+    const loggedInUser = JSON.parse(localStorage.getItem('user'))
 
+    console.log(loggedInUser[0].username);
     
+    
+    
+
+    useEffect(() => {
+        getUsers()
+    }, [])
+
     useEffect(() => {
         const userLoggedIn = JSON.parse(localStorage.getItem('user'))
-        console.log(userLoggedIn);
-        
+
+
         socket.on('usersConnected', (users) => {
             setConnectedUsers(users);
         });
@@ -35,17 +44,24 @@ function Home() {
         };
     }, []);
 
-    const registerUser = () => {
-        if (username) {
-            socket.emit('registerUser', username);
-        }
-    };
+    useEffect(() => {
+        console.log(connectedUsers);
+
+    }, [connectedUsers])
+
+
+
+    const getUsers = () => {
+        fetch('http://localhost:5000/getUsers')
+            .then((response) => { return response.json() })
+            .then((data) => { setConnectedUsers(data.data) })
+    }
 
     const sendMessage = () => {
         if (message && recipientId) {
             socket.emit('sendMessage', { recipientId, message });
             const msgObject = { from: username, message };
-            setMessages((prevMessages) => [...prevMessages, msgObject , msg]);
+            setMessages((prevMessages) => [...prevMessages, msgObject, msg]);
             setMessage('');
         }
     };
@@ -55,22 +71,22 @@ function Home() {
     };
 
 
-  return (
-    
-    <div className='flex gap-2 w-screen h-screen p-2'>
-            <div className="recentChats flex flex-col rounded-lg w-[20%] p-2 bg-slate-600">
-                <div className="flex xl:flex-row flex-col justify-between">
-                    <input className='rounded-lg' type="text" placeholder='Enter Your Name...' value={username} onChange={(e) => { setUsername(e.target.value) }} />
-                    <button className='bg-white rounded-lg' onClick={registerUser}>Go Online</button>
-                </div>
+    return (
+
+        <div className='flex gap-2 w-screen h-screen p-2'>
+            <div className="recentChats flex gap-2 flex-col rounded-lg w-[20%] p-2 bg-slate-600">
+
                 {
-                    Object.keys(connectedUsers).map((userId, index) => (
-                        <div key={index} className='flex items-center gap-4 border rounded-lg p-1' onClick={() => { connectWith(userId) }}>
-                            <span className='profilePhoto w-[50px] h-[50px] border rounded-full'></span>
-                            <span>{connectedUsers[userId]}</span>
+                    connectedUsers.map((user, index) => (
+                        <div key={index} className={` ${loggedInUser[0].username === user.username ? 'hidden' : 'flex'} items-center gap-4 p-3 border bg-slate-400 cursor-pointer rounded-lg hover:bg-gray-100 transition duration-200`} onClick={() => { connectWith(userId) }} >
+                            <span className='profilePhoto w-[50px] h-[50px] border border-gray-300 rounded-full bg-gray-300 flex items-center justify-center'>
+                                <span className='text-gray-600 font-semibold'>{user.username.charAt(0)}</span>
+                            </span>
+                            <span className='userName text-gray-800 font-semibold'>{user.username}</span>
                         </div>
                     ))
                 }
+
             </div>
 
             <div className="chatWindowAndInputBox rounded-lg flex flex-col gap-2 w-[80%] h-full">
@@ -90,7 +106,7 @@ function Home() {
                 </div>
             </div>
         </div>
-  )
+    )
 }
 
 export default Home

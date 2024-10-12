@@ -21,6 +21,11 @@ let users = {};
 app.use(cors());
 app.use(express.json());
 
+app.get('/getUsers', async (req, res)=>{
+   const data = await UserModel.find({})
+   res.status(200).json({message:'All Registered users', data:data})
+})
+
 
 app.post('/RegisterUser', async (req, res)=>{
     const newUser = new UserModel(req.body)
