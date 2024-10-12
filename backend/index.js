@@ -39,7 +39,7 @@ app.get('/getUsers', async (req, res)=>{
 })
 
 
-app.post('/RegisterUser', async (req, res)=>{
+app.post('https://chat-application-frontend-rose.vercel.app/Register', async (req, res)=>{
     const newUser = new UserModel(req.body)
     console.log(req.body)
     const data = await newUser.save()
